@@ -1,0 +1,37 @@
+# Model
+def model(Sig):
+    from math import exp, log
+    import pandas
+    Signaldf=Sig
+    ret=[]
+    for i in range(len(Signaldf)):
+        ret.append(None)
+    #Model
+    i=0
+    while i<len(Signaldf):
+        # Buy 1
+        if Signaldf.iloc[i]['Sig']==1 and i+1<len(Signaldf):
+            
+            if Signaldf.iloc[i+1]['Sig'] in (0,-1):
+                i=i+1
+                continue
+            
+            i=i+1
+            cp=Signaldf.iloc[i]['Open']
+            org=i
+            while i<len(Signaldf):
+                if Signaldf.iloc[i]['Sig']==0 or Signaldf.iloc[i]['Sig']==-1:
+                    sp=Signaldf.iloc[i]['Open']
+                    ret[org] = log(sp/cp)
+                    break
+                else:
+                    i=i+1
+
+        # Skip 0
+        else:
+            i=i+1    
+    ret = pandas.Series(ret)
+    Signaldf['Return'] = ret.values
+    
+    Signaldf.set_index('Date')
+    return Signaldf
