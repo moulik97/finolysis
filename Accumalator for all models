@@ -1,0 +1,33 @@
+def total(SheetName,band):
+    import numpy
+    from math import exp, log
+    master=[x[:] for x in [[None] * 213] * 41] 
+    for i in range(41):
+        master[i][0]=1978+i
+            
+    count=1
+    import pandas
+    for shortP in range(5,13):
+        for longP in range(shortP+5,40):
+            
+            df=MA(SheetName,shortP,longP)
+            Sigdf=SigGen(df,band)
+            
+            final=model(Sigdf)
+            
+            final=final.set_index('Date')
+            gbsum =final.groupby([final.index.year]).sum()
+            #gbavg =final.groupby([final.index.year]).mean()
+            #gbsum['Avg Positive Days']=gbavg['No. of Days Positive']
+            #gbsum['Avg Negative Days']=gbavg['No. of Days Negative']
+            gbsum['Master Return'] = (numpy.exp(gbsum['Return']))*100
+           # gbsum['Master Return'] = (gbsum['Positive Return']*gbsum['Avg Positive Days']+gbsum['Negative Return']*gbsum['Avg Negative Days'])
+            for i in range(len(gbsum)):
+                mast = gbsum.iloc[i]['Master Return']
+                master[i][count]=mast
+            count=count+1
+            
+            print(shortP,'_',longP,'Done')
+            
+    return master
+ 
