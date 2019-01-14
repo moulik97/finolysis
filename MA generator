@@ -1,0 +1,10 @@
+#Import Excel and generate MA
+def MA(SheetName,shortP,longP):
+    # read excel
+    import pandas
+    workbook=SheetName+'.xlsx'
+
+    df = pandas.read_excel(workbook, sheet_name=SheetName)
+    df['Short']=df['Open'].rolling(shortP+1).mean()
+    df['Long']=df['Open'].rolling(longP+1).mean()
+    return df
