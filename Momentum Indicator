@@ -1,0 +1,10 @@
+def Mom(SheetName,ShiftPeriod):
+    # read excel
+    import pandas
+    workbook=SheetName+'.xlsx'
+
+    df = pandas.read_excel(workbook, sheet_name=SheetName)
+    df['Shift_Open'] = df['Open'].shift(ShiftPeriod)
+    df['Momentum'] = df['Open']/df['Shift_Open']*100
+    return df
+
