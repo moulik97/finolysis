@@ -1,0 +1,14 @@
+#Signal Generation Function
+def SigGen(df,band):
+    import pandas
+    l=[]
+    for i in range(len(df)):
+        if df.iloc[i]['Open']>df.iloc[i]['Check']*(1+band):
+            l.append(1)
+        elif df.iloc[i]['Open']<df.iloc[i]['Check']*(1-band):
+            l.append(-1)
+        else:
+            l.append(0)
+    Sig=pandas.Series(l)
+    df['Sig']=Sig.values
+    return df
