@@ -1,0 +1,20 @@
+# Short and Long periods are varied accordingly for better sensitivity in models
+#Import Excel and generate MA
+def MA(SheetName,shortP,longP):
+    # read excel
+    import pandas, numpy as np
+    workbook=SheetName+'.xlsx'
+
+    df = pandas.read_excel(workbook, sheet_name=SheetName)
+    df['Short']=df['Open'].rolling(shortP).std()
+    df['Long']=df['Open'].rolling(longP).std()
+    df['ER']=(df['Long']/df['Short']+2).round()
+    df['Check']=np.nan
+    end=int(len(df.index))
+    for i in range(50,end):
+        period = int(df.iloc[i]['ER'])
+        tem=0
+        for j in range(i-1,i-period-1,-1):
+            tem=tem+df.iloc[j]['Open']
+        df.at[i,'Check']=tem/period
+    return df
